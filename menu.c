@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <time.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef struct Horse{
   int chosen;
@@ -9,42 +11,47 @@ typedef struct Horse{
   char name[20];
 }Horse;
 
-void * init_horse0(void *vargs){
+typedef struct RaceParams{
+  int race[50];
+  struct Horse horses[4];
+}RaceParams;
+
+void * (*Func)(void *);
+
+void * init_horses(void *vargs){
+  int *chosen_or_n = (int *)vargs;
+
   struct Horse Beautiful_Princess;
-  Beautiful_Princess.chosen = 1;
   Beautiful_Princess.id = 0;
-  printf("Beautiful Princess is ready!\n");
-  pthread_exit(NULL);
-}
+  strcpy(Beautiful_Princess.name, "Beautiful Princess");
+  printf("Beautiful Princess is ready to race!\n");
 
-void * init_horse1(void *vargs){
   struct Horse Pisich;
-  Pisich.chosen = 1;
   Pisich.id = 1;
-  printf("Pisich is ready!\n");
-  pthread_exit(NULL);
-}
+  strcpy(Pisich.name, "Pisich");
+  printf("Pisich is ready to race!\n");
 
-void * init_horse2(void *vargs){
   struct Horse Carry;
-  Carry.chosen = 1;
   Carry.id = 2;
-  printf("Carry is ready!\n");
-  pthread_exit(NULL);
-}
-void * init_horse3(void *vargs){
-  struct Horse Jose;
-  Jose.chosen = 1;
-  Jose.id = 3;
-  printf("Jose is ready!\n");
-  pthread_exit(NULL);
-}
+  strcpy(Carry.name, "Carry");
+  printf("Carry is ready to race!\n");
 
-void * init_horse4(void *vargs){
+  struct Horse Jose;
+  Jose.id = 3;
+  strcpy(Jose.name, "Jose");
+  printf("Jose is ready to race!\n");
+
   struct Horse Kings_Son;
-  Kings_Son.chosen = 1;
   Kings_Son.id = 4;
-  printf("King's Son is ready!\n");
+  strcpy(Kings_Son.name, "Kings_Son");
+  printf("King's Son is ready to race!\n");
+
+  if(*chosen_or_n == 0) Beautiful_Princess.chosen = 1;
+  else if(*chosen_or_n == 1) Pisich.chosen = 1;
+  else if(*chosen_or_n == 2) Carry.chosen = 1;
+  else if(*chosen_or_n == 3) Jose.chosen = 1;
+  else if(*chosen_or_n == 4) Kings_Son.chosen = 1;
+
   pthread_exit(NULL);
 }
 
@@ -57,25 +64,31 @@ void initial_print(){
 }
 
 int main() {
-  char *option;
+  int *option;
   pthread_t MyThread[5];
   const int PID[5] = {0,1,2,3,4};
 
   initial_print();
-  //ARREGLO DE FUNCIONES PARA INICIALIZAR CABALLOS AQUI
-  scanf("%c", option);
-
+  
+  scanf("%d", option);
+  Func = &init_horses;
   switch(*option){
-    case '0': pthread_create(&MyThread[0], NULL, init_horse0, NULL);
+    case 0: pthread_create(&MyThread[0], NULL, Func, (void *)&PID[0]);
     pthread_join(MyThread[0], NULL);
-    case '1': pthread_create(&MyThread[1], NULL, init_horse1, (void *)&PID[1]);
+    break;
+    case 1: pthread_create(&MyThread[1], NULL, Func, (void *)&PID[1]);
     pthread_join(MyThread[1], NULL);
-    case '2': pthread_create(&MyThread[2], NULL, init_horse2, (void *)&PID[2]);
+    break;
+    case 2: pthread_create(&MyThread[2], NULL, Func, (void *)&PID[2]);
     pthread_join(MyThread[2], NULL);
-    case '3': pthread_create(&MyThread[3], NULL, init_horse3, (void *)&PID[3]);
+    break;
+    case 3: pthread_create(&MyThread[3], NULL, Func, (void *)&PID[3]);
     pthread_join(MyThread[3], NULL);
-    case '4': pthread_create(&MyThread[4], NULL, init_horse4, (void *)&PID[4]);
+    break;
+    case 4: pthread_create(&MyThread[4], NULL, Func, (void *)&PID[4]);
     pthread_join(MyThread[4], NULL);
+    break;
   }
+
   return 0;
 }
