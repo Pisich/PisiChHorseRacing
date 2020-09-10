@@ -4,19 +4,35 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define RACE_LIM 50
+
 typedef struct Horse{
   int chosen;
   int id,bet,rep;
-  int path[100];
+  char path[RACE_LIM];
   char name[20];
 }Horse;
 
 typedef struct RaceParams{
-  int race[50];
+  int race[RACE_LIM];
   struct Horse horses[4];
 }RaceParams;
 
 void * (*Func)(void *);
+
+int *easy_race[RACE_LIM];
+int *hard_race[RACE_LIM];
+
+
+void * easy_diff(void *vargs){
+  for(int i = 0; i<=RACE_LIM/5;i+=5) *easy_race[i] = rand() % 3;
+  pthread_exit(NULL);
+}
+
+void * hard_diff(void *vargs){
+  for(int i = 0; i<=RACE_LIM/3;i+=3) *easy_race[i] = rand() % 3;
+  pthread_exit(NULL);
+}
 
 void * init_horses(void *vargs){
   int *chosen_or_n = (int *)vargs;
@@ -65,9 +81,11 @@ void initial_print(){
 
 int main() {
   int *option;
-  pthread_t MyThread[5];
+  int *easy_race[RACE_LIM], *hard_race[RACE_LIM] = {0};
+  pthread_t MyThread[10];
   const int PID[5] = {0,1,2,3,4};
 
+  srand(time(0));
   initial_print();
   
   scanf("%d", option);
@@ -89,6 +107,13 @@ int main() {
     pthread_join(MyThread[4], NULL);
     break;
   }
+  pthread_create(&MyThread[5], NULL, easy_diff, (void *)&PID[0]);
+  pthread_join(MyThread[5], NULL);
+  pthread_create(&MyThread[6], NULL, hard_diff, (void*)&PID[0]);
+  pthread_join(MyThread[6], NULL);
 
+  for(int i = 0;i<RACE_LIM;i++) printf("%d", *easy_race[i]);
+  printf("\n\n");
+  for(int i = 0;i<RACE_LIM;i++) printf("%d", *hard_race[i]);
   return 0;
 }
