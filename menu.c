@@ -79,6 +79,12 @@ void initial_print(){
   printf("Enter your selection here: ");
 }
 
+void diff_print(){
+  printf("Which race difficulty do you want to play?\n");
+  printf("0. EASY\n1. HARD\n");
+  printf("Please enter your selection: ");
+}
+
 int main() {
   int *option;
   int *easy_race[RACE_LIM], *hard_race[RACE_LIM] = {0};
@@ -112,8 +118,11 @@ int main() {
   pthread_create(&MyThread[6], NULL, hard_diff, (void*)&PID[0]);
   pthread_join(MyThread[6], NULL);
 
+  diff_print();
+  scanf("%d",option);
+  
   for(int i = 0;i<RACE_LIM;i++) printf("%d", *easy_race[i]);
   printf("\n\n");
   for(int i = 0;i<RACE_LIM;i++) printf("%d", *hard_race[i]);
-  return 0;
+  return 1;
 }
