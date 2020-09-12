@@ -3,32 +3,60 @@
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #define RACE_LIM 50
 
 typedef struct Horse{
   int chosen;
-  int id,bet,rep;
+  int id, bet, rep;
   char path[RACE_LIM];
   char name[20];
 }Horse;
 
 typedef struct RaceParams{
-  int race[RACE_LIM];
-  struct Horse horses[4];
+  int *race[RACE_LIM];
+  struct Horse horses[5];
 }RaceParams;
 
 void * (*Func)(void *);
+typedef void (*adv_or_dis)(int);
 
 int *easy_race[RACE_LIM];
 int *hard_race[RACE_LIM];
 int start = 0;
+int end = 0;
 
+struct RaceParams RaceGen;
+
+
+void horse_trip(int place){
+  if(RaceGen.horses[place].chosen == 1)
+    printf("\n%s tripped!\n", RaceGen.horses[place].name);
+  sleep(2);
+}
+
+void horse_jump(int place){
+  if(RaceGen.horses[place].chosen == 1)
+    printf("\n%s got boosted!\n", RaceGen.horses[place].name);
+}
+
+void horse_stuck(int place){
+  if(RaceGen.horses[place].chosen == 1)
+    printf("\n%s got stuck!\n", RaceGen.horses[place].name);
+  sleep(rand() % 3);
+}
+
+void horse_fell(int place){
+  if(RaceGen.horses[place].chosen == 1)
+    printf("\n%s fell!\n", RaceGen.horses[place].name);
+  sleep(rand() % 5);
+}
 void * easy_diff(void *vargs){
 
   for(int i = 0; i<RACE_LIM;i+=5){
     easy_race[i] = malloc(sizeof(int));
-    *easy_race[i] = rand() % 3;
+    *easy_race[i] = rand() % 4;
   }
   pthread_exit(NULL);
 }
@@ -37,7 +65,7 @@ void * hard_diff(void *vargs){
 
   for(int i = 0; i<RACE_LIM;i+=3){
     hard_race[i] = malloc(sizeof(int));
-    *hard_race[i] = rand() % 3;
+    *hard_race[i] = rand() % 4;
   }
   pthread_exit(NULL);
 }
@@ -76,13 +104,39 @@ void * init_horses(void *vargs){
   else if(*chosen_or_n == 3) Jose.chosen = 1;
   else if(*chosen_or_n == 4) Kings_Son.chosen = 1;
 
+  RaceGen.horses[0] = Beautiful_Princess;
+  RaceGen.horses[1] = Pisich;
+  RaceGen.horses[2] = Carry;
+  RaceGen.horses[3] = Jose;
+  RaceGen.horses[4] = Kings_Son;
+
   pthread_exit(NULL);
 }
 
 void * race(void * horse){
-  int *chosen = (int *)horse;
+  int *actual_horse = (int *)horse;
   while(! start);
-
+  adv_or_dis advantage = horse_jump;
+  adv_or_dis disadvantage1 = horse_trip;
+  adv_or_dis disadvantage2 = horse_stuck;
+  adv_or_dis disadvantage3 = horse_fell;
+  for(int i = 0;i<RACE_LIM;i++){
+    if(RaceGen.race[i] == 1){
+      disadvantage1(*actual_horse);
+    }
+    else if(RaceGen.race[i] == 2){
+      advantage(*actual_horse);
+      i++;
+    }
+    else if(RaceGen.race[i] == 3){
+      disadvantage2(*actual_horse);
+    }
+    else if(RaceGen.race[i] == 4){
+      disadvantage3(*actual_horse);
+    }
+  }
+  end ++;
+  printf("\n%s got %d place!\n", RaceGen.horses[*actual_horse].name, end);
   pthread_exit(NULL);
 }
 
@@ -108,7 +162,7 @@ void pre_race_print(){
 
 int main() {
   int *option;
-  int *easy_race[RACE_LIM], *hard_race[RACE_LIM], *final_race[RACE_LIM];
+  int *easy_race[RACE_LIM], *hard_race[RACE_LIM];
   pthread_t MyThread[10];
   const int PID[5] = {0,1,2,3,4};
 
@@ -142,9 +196,9 @@ int main() {
   diff_print();
   scanf("%d",option);
   switch(*option){
-    case 0: *final_race = *easy_race;
+    case 0: for(int i= 0;i<RACE_LIM;i++) RaceGen.race[i] = easy_race[i];
     break;
-    case 1: *final_race = *hard_race;
+    case 1: for(int i= 0;i<RACE_LIM;i++) RaceGen.race[i] = hard_race[i];
     break;
   }
   pre_race_print();
@@ -154,5 +208,6 @@ int main() {
   
   for(int i= 0; i<5;i++) pthread_join(MyThread[i], NULL);
 
+  printf("\n\nTHE RACE ENDED!\n");
   return 1;
 }
