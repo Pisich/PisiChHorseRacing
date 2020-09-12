@@ -22,15 +22,23 @@ void * (*Func)(void *);
 
 int *easy_race[RACE_LIM];
 int *hard_race[RACE_LIM];
-
+int start = 0;
 
 void * easy_diff(void *vargs){
-  for(int i = 0; i<=RACE_LIM/5;i+=5) *easy_race[i] = rand() % 3;
+
+  for(int i = 0; i<RACE_LIM;i+=5){
+    easy_race[i] = malloc(sizeof(int));
+    *easy_race[i] = rand() % 3;
+  }
   pthread_exit(NULL);
 }
 
 void * hard_diff(void *vargs){
-  for(int i = 0; i<=RACE_LIM/3;i+=3) *easy_race[i] = rand() % 3;
+
+  for(int i = 0; i<RACE_LIM;i+=3){
+    hard_race[i] = malloc(sizeof(int));
+    *hard_race[i] = rand() % 3;
+  }
   pthread_exit(NULL);
 }
 
@@ -71,6 +79,13 @@ void * init_horses(void *vargs){
   pthread_exit(NULL);
 }
 
+void * race(void * horse){
+  int *chosen = (int *)horse;
+  while(! start);
+
+  pthread_exit(NULL);
+}
+
 void initial_print(){
   printf("WELCOME TO HORSE RACE SIM 2020\n");
   printf("Select the horse that you want to bet to!\n");
@@ -85,9 +100,15 @@ void diff_print(){
   printf("Please enter your selection: ");
 }
 
+void pre_race_print(){
+  printf("Race is about to start!\n");
+  printf("Grab your popcorn and good luck to everybody!\n");
+  printf("\n\nSTART\n\n");
+}
+
 int main() {
   int *option;
-  int *easy_race[RACE_LIM], *hard_race[RACE_LIM] = {0};
+  int *easy_race[RACE_LIM], *hard_race[RACE_LIM], *final_race[RACE_LIM];
   pthread_t MyThread[10];
   const int PID[5] = {0,1,2,3,4};
 
@@ -115,14 +136,23 @@ int main() {
   }
   pthread_create(&MyThread[5], NULL, easy_diff, (void *)&PID[0]);
   pthread_join(MyThread[5], NULL);
-  pthread_create(&MyThread[6], NULL, hard_diff, (void*)&PID[0]);
+  pthread_create(&MyThread[6], NULL, hard_diff, (void *)&PID[0]);
   pthread_join(MyThread[6], NULL);
 
   diff_print();
   scanf("%d",option);
+  switch(*option){
+    case 0: *final_race = *easy_race;
+    break;
+    case 1: *final_race = *hard_race;
+    break;
+  }
+  pre_race_print();
+  for(int i = 0; i<5;i++) pthread_create(&MyThread[i], NULL, race, (void *)&PID[i]);
+
+  start = 1;
   
-  for(int i = 0;i<RACE_LIM;i++) printf("%d", *easy_race[i]);
-  printf("\n\n");
-  for(int i = 0;i<RACE_LIM;i++) printf("%d", *hard_race[i]);
+  for(int i= 0; i<5;i++) pthread_join(MyThread[i], NULL);
+
   return 1;
 }
