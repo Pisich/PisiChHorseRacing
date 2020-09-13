@@ -141,7 +141,8 @@ void * race(void * horse){
 }
 
 void initial_print(){
-  system("figlet -c Welcome to PisiChHorseRacing");
+  system("figlet -c Welcome to PisiChHorse");
+  system("figlet -c Racing");
   printf("Select the horse that you want to bet to!\n");
   printf("0. Beatiful Princess\n");
   printf("1. Pisich\n2. Carry\n3. Jose\n4. King's Son\n");
