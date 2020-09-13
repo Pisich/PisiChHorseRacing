@@ -218,8 +218,8 @@ int main() {
   for(int i = 0;i<4;i++){
     if(RaceGen->horses[i].chosen == 1){
       if(RaceGen->horses[i].place == 1)
-        printf("You won your %d bet!", RaceGen->horses[i].bett);
-      else printf("You lost your %d bet!", RaceGen->horses[i].bett);
+        printf("You won your %d bet!\n", RaceGen->horses[i].bett);
+      else printf("You lost your %d bet!\n", RaceGen->horses[i].bett);
     }
   }                                                        
   return 1;
