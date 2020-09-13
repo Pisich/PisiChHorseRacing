@@ -8,7 +8,7 @@
 #define RACE_LIM 50
 
 typedef struct Horse{
-  int chosen, id;
+  int chosen, id, bett, place;
   char name[20];
 }Horse;
 
@@ -24,9 +24,16 @@ int easy_race[RACE_LIM];
 int hard_race[RACE_LIM];
 int start = 0;
 int end = 0;
+int bet = 0;
 
 struct RaceParams *RaceGen;
 
+
+void bet_amount(int place){
+  printf("Place your bet for %s:", RaceGen->horses[place].name);
+  scanf("%d", &bet);
+  RaceGen->horses[place].bett = bet;
+}
 
 void horse_trip(int place){
   if(RaceGen->horses[place].chosen == 1)
@@ -128,6 +135,7 @@ void * race(void * horse){
     }
   }
   end ++;
+  RaceGen->horses[*actual_horse].place = end;
   printf("\n%s got %d place!\n", RaceGen->horses[*actual_horse].name, end);
   pthread_exit(NULL);
 }
@@ -165,18 +173,23 @@ int main() {
   switch(*option){
     case 0: pthread_create(&MyThread[0], NULL, Func, (void *)&PID[0]);
     pthread_join(MyThread[0], NULL);
+    bet_amount(PID[0]);
     break;
     case 1: pthread_create(&MyThread[1], NULL, Func, (void *)&PID[1]);
     pthread_join(MyThread[1], NULL);
+    bet_amount(PID[1]);
     break;
     case 2: pthread_create(&MyThread[2], NULL, Func, (void *)&PID[2]);
     pthread_join(MyThread[2], NULL);
+    bet_amount(PID[2]);
     break;
     case 3: pthread_create(&MyThread[3], NULL, Func, (void *)&PID[3]);
     pthread_join(MyThread[3], NULL);
+    bet_amount(PID[3]);
     break;
     case 4: pthread_create(&MyThread[4], NULL, Func, (void *)&PID[4]);
     pthread_join(MyThread[4], NULL);
+    bet_amount(PID[4]);
     break;
   }
 
@@ -201,5 +214,13 @@ int main() {
   for(int i= 0; i<5;i++) pthread_join(MyThread[i], NULL);
 
   printf("\n\nTHE RACE ENDED!\n");
+  
+  for(int i = 0;i<4;i++){
+    if(RaceGen->horses[i].chosen == 1){
+      if(RaceGen->horses[i].place == 1)
+        printf("You won your %d bet!", RaceGen->horses[i].bett);
+      else printf("You lost your %d bet!", RaceGen->horses[i].bett);
+    }
+  }                                                        
   return 1;
 }
