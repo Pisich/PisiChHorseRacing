@@ -141,7 +141,7 @@ void * race(void * horse){
 }
 
 void initial_print(){
-  printf("WELCOME TO HORSE RACE SIM 2020\n");
+  system("figlet -c Welcome to PisiChHorseRacing");
   printf("Select the horse that you want to bet to!\n");
   printf("0. Beatiful Princess\n");
   printf("1. Pisich\n2. Carry\n3. Jose\n4. King's Son\n");
@@ -155,9 +155,9 @@ void diff_print(){
 }
 
 void pre_race_print(){
-  printf("Race is about to start!\n");
+  system("figlet -c Race is about to start!");
   printf("Grab your popcorn and good luck to everybody!\n");
-  printf("\n\nSTART\n\n");
+  system("figlet -c START");
 }
 
 int main() {
@@ -213,7 +213,7 @@ int main() {
   
   for(int i= 0; i<5;i++) pthread_join(MyThread[i], NULL);
 
-  printf("\n\nTHE RACE ENDED!\n");
+  system("figlet -c THE RACE ENDED!");
   
   for(int i = 0;i<4;i++){
     if(RaceGen->horses[i].chosen == 1){
