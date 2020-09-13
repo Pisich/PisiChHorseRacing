@@ -30,7 +30,7 @@ struct RaceParams *RaceGen;
 
 
 void bet_amount(int place){
-  printf("Place your bet for %s:", RaceGen->horses[place].name);
+  printf("Place your bet for %s: ", RaceGen->horses[place].name);
   scanf("%d", &bet);
   RaceGen->horses[place].bett = bet;
 }
@@ -136,7 +136,7 @@ void * race(void * horse){
   }
   end ++;
   RaceGen->horses[*actual_horse].place = end;
-  printf("\n%s got %d place!\n", RaceGen->horses[*actual_horse].name, end);
+  printf("\n\t%s got %d place!\n", RaceGen->horses[*actual_horse].name, end);
   pthread_exit(NULL);
 }
 
