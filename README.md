@@ -4,7 +4,7 @@ By Carlos Rodríguez (Pisich)
 A horse race betting simulator where the user can choose to bet for their favorite horse. The user can also choose the difficulty of the race (easy or hard), the harder the difficulty is, the more obstacles the horse will have to jump. This version supports multithreading and memory management.
 
 ## Compiling
-You can use any C compiler for this proyect, even though I recommend you to use GCC.
+You can use any C compiler for this proyect, but I recommend you to use GCC.
 ```bash
 # Clone the PisiChHorseracing repo
 git clone https://github.com/Pisich/PisiChHorseRacing
