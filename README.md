@@ -25,7 +25,7 @@ git clone https://github.com/Pisich/PisiChHorseRacing
 # Cd into the newly created folder
 cd PisiChHorseRacing
 
-# Build the container
+# Build the container (Attention to the '.')
 docker build -t pisichhorseracing:1.0 .
 
 #Run the container
