@@ -6,7 +6,7 @@ A horse race betting simulator where the user can choose to bet for their favori
 ## Compiling
 You can use any C compiler for this proyect, but I recommend you to use GCC.
 ```bash
-# Clone the PisiChHorseracing repo
+# Clone the PisiChHorseRacing repo
 git clone https://github.com/Pisich/PisiChHorseRacing
 
 # Cd into the newly created folder
