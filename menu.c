@@ -14,8 +14,12 @@ typedef struct Horse{
 
 typedef struct RaceParams{
   int race[RACE_LIM];
-  struct Horse horses[5];
 }RaceParams;
+
+typedef struct HorseList{
+  Horse val;
+  struct HorseList *nxt;
+}HorseList;
 
 void * (*Func)(void *);
 typedef void (*adv_or_dis)(int);
@@ -26,35 +30,48 @@ int start = 0;
 int end = 0;
 int bet = 0;
 
-struct RaceParams *RaceGen;
-
+RaceParams *RaceGen;
+HorseList *horse_head;
+HorseList *heady;
+int top = 0;
+char names[15][20] = {"Rusher", "Gotcha", "White J", "Bones", "Sentinel", "Beautiful Princess", "Pisich", "Carry", "Kings Son", "Jose", "Carnage", "Corn Breaker"};
 
 void bet_amount(int place){
-  printf("Place your bet for %s: ", RaceGen->horses[place].name);
+  HorseList *head = horse_head;
+  for(int i=0;i<place;i++) head = head->nxt;
+  printf("Place your bet for %s: ", head->val.name);
   scanf("%d", &bet);
-  RaceGen->horses[place].bett = bet;
+  head->val.bett = bet;
 }
 
 void horse_trip(int place){
-  if(RaceGen->horses[place].chosen == 1)
-    printf("\n%s tripped!\n", RaceGen->horses[place].name);
+  HorseList *head = horse_head;
+  for(int i=0;i<place;i++) head = head->nxt;
+  if(head->val.chosen == 1)
+    printf("\n%s tripped!\n", head->val.name);
   sleep(2);
 }
 
 void horse_jump(int place){
-  if(RaceGen->horses[place].chosen == 1)
-    printf("\n%s got boosted!\n", RaceGen->horses[place].name);
+  HorseList *head = horse_head;
+  for(int i=0;i<place;i++) head = head->nxt;
+  if(head->val.chosen == 1)
+    printf("\n%s got boosted!\n", head->val.name);
 }
 
 void horse_stuck(int place){
-  if(RaceGen->horses[place].chosen == 1)
-    printf("\n%s got stuck!\n", RaceGen->horses[place].name);
+  HorseList *head = horse_head;
+  for(int i=0;i<place;i++) head = head->nxt;
+  if(head->val.chosen == 1)
+    printf("\n%s got stuck!\n", head->val.name);
   sleep(rand() % 3);
 }
 
 void horse_fell(int place){
-  if(RaceGen->horses[place].chosen == 1)
-    printf("\n%s fell!\n", RaceGen->horses[place].name);
+  HorseList *head = horse_head;
+  for(int i=0;i<place;i++) head = head->nxt;
+  if(head->val.chosen == 1)
+    printf("\n%s fell!\n", head->val.name);
   sleep(rand() % 5);
 }
 void * easy_diff(void *vargs){
@@ -69,46 +86,24 @@ void * hard_diff(void *vargs){
   pthread_exit(NULL);
 }
 
+void add_and_init_horse(HorseList *head){
+  HorseList *neww = malloc(sizeof(HorseList));
+  neww->val.id = top;
+  strcpy(neww->val.name, names[top]);
+  while(head->nxt != NULL) head = head->nxt;
+  head->nxt = neww;
+  top++;
+}
+
 void * init_horses(void *vargs){
   int *chosen_or_n = (int *)vargs;
-
-  struct Horse Beautiful_Princess;
-  Beautiful_Princess.id = 0;
-  strcpy(Beautiful_Princess.name, "Beautiful Princess");
-  printf("%s is ready to race!\n", Beautiful_Princess.name);
-
-  struct Horse Pisich;
-  Pisich.id = 1;
-  strcpy(Pisich.name, "Pisich");
-  printf("%s is ready to race!\n", Pisich.name);
-
-  struct Horse Carry;
-  Carry.id = 2;
-  strcpy(Carry.name, "Carry");
-  printf("%s is ready to race!\n", Carry.name);
-
-  struct Horse Jose;
-  Jose.id = 3;
-  strcpy(Jose.name, "Jose");
-  printf("%s is ready to race!\n", Jose.name);
-
-  struct Horse Kings_Son;
-  Kings_Son.id = 4;
-  strcpy(Kings_Son.name, "Kings_Son");
-  printf("%s is ready to race!\n", Kings_Son.name);
-
-  if(*chosen_or_n == 0) Beautiful_Princess.chosen = 1;
-  else if(*chosen_or_n == 1) Pisich.chosen = 1;
-  else if(*chosen_or_n == 2) Carry.chosen = 1;
-  else if(*chosen_or_n == 3) Jose.chosen = 1;
-  else if(*chosen_or_n == 4) Kings_Son.chosen = 1;
-  
-  RaceGen->horses[0] = Beautiful_Princess;
-  RaceGen->horses[1] = Pisich;
-  RaceGen->horses[2] = Carry;
-  RaceGen->horses[3] = Jose;
-  RaceGen->horses[4] = Kings_Son;
-  
+  int i = 0;
+  HorseList *head = horse_head;
+  while(i<*chosen_or_n){
+    head = head->nxt;
+    i++;
+  }
+  head->val.chosen = 1;
   pthread_exit(NULL);
 }
 
@@ -135,18 +130,41 @@ void * race(void * horse){
     }
   }
   end ++;
-  RaceGen->horses[*actual_horse].place = end;
-  printf("\n\t%s got %d place!\n", RaceGen->horses[*actual_horse].name, end);
+  HorseList *head = horse_head;
+  for(int i=0;i<*actual_horse;i++) head = head->nxt;
+  head->val.place = end;
+  printf("\n\t%s got %d place!\n", head->val.name, end);
   pthread_exit(NULL);
 }
 
-void initial_print(){
-  system("figlet -c Welcome to PisiChHorse");
-  system("figlet -c Racing");
+void remove_horse(){
+  HorseList *temp_head = horse_head;
+  while(temp_head->nxt->nxt != NULL){
+    temp_head = temp_head->nxt;
+  }
+  temp_head->nxt = NULL;
+  top--;
+}
+
+void initial_print(HorseList *head){
+  printf("WELCOME TO HORSE RACE SIM 2020\n");
   printf("Select the horse that you want to bet to!\n");
-  printf("0. Beatiful Princess\n");
-  printf("1. Pisich\n2. Carry\n3. Jose\n4. King's Son\n");
+  for(int i=0;i<top;i++){
+    printf("%d. %s\n", i, head->val.name);
+    head = head->nxt;
+  }
   printf("Enter your selection here: ");
+}
+
+int main_menu(){
+  int option;
+  printf("Pre-race options:\n");
+  if(top == 0) printf("Enter 0 to play with default settings\n");
+  else printf("Enter 0 to exit\n");
+  printf("1. Add a horse (Default is 5)\n2. Remove a horse (Default is 5)\n");
+  printf("Enter your selection here: ");
+  scanf("%d", &option);
+  return option;
 }
 
 void diff_print(){
@@ -156,44 +174,44 @@ void diff_print(){
 }
 
 void pre_race_print(){
-  system("figlet -c Race is about to start!");
+  printf("Race is about to start!\n");
   printf("Grab your popcorn and good luck to everybody!\n");
-  system("figlet -c START");
+  printf("\n\nSTART\n\n");
 }
 
 int main() {
   int *option;
+  int f;
   pthread_t MyThread[10];
-  const int PID[5] = {0,1,2,3,4};
+  const int PID[10] = {0,1,2,3,4,5,6,7,8,9};
   RaceGen = malloc(sizeof(RaceParams));
-  srand(time(0));
-  initial_print();
-  
-  scanf("%d", option);
-  Func = &init_horses;
-  switch(*option){
-    case 0: pthread_create(&MyThread[0], NULL, Func, (void *)&PID[0]);
-    pthread_join(MyThread[0], NULL);
-    bet_amount(PID[0]);
-    break;
-    case 1: pthread_create(&MyThread[1], NULL, Func, (void *)&PID[1]);
-    pthread_join(MyThread[1], NULL);
-    bet_amount(PID[1]);
-    break;
-    case 2: pthread_create(&MyThread[2], NULL, Func, (void *)&PID[2]);
-    pthread_join(MyThread[2], NULL);
-    bet_amount(PID[2]);
-    break;
-    case 3: pthread_create(&MyThread[3], NULL, Func, (void *)&PID[3]);
-    pthread_join(MyThread[3], NULL);
-    bet_amount(PID[3]);
-    break;
-    case 4: pthread_create(&MyThread[4], NULL, Func, (void *)&PID[4]);
-    pthread_join(MyThread[4], NULL);
-    bet_amount(PID[4]);
-    break;
-  }
 
+  horse_head = malloc(sizeof(HorseList));
+  horse_head->nxt = NULL;
+  strcpy(horse_head->val.name, names[11]);
+
+  srand(time(0));
+  for(int i = 0;i<5;i++) add_and_init_horse(horse_head);
+  while( (f = main_menu()) != 0){
+    switch(f){
+    case 1: add_and_init_horse(horse_head);
+    break;
+    case 2: remove_horse();
+    break;
+    } 
+  }
+  initial_print(horse_head);
+  scanf("%d", option);
+
+  Func = &init_horses;
+  heady = horse_head;
+  int i;
+  for(i =0 ;i<*option;i++) heady = heady->nxt;
+  pthread_create(&MyThread[i], NULL, Func, (void *)&PID[i]);
+  pthread_join(MyThread[i], NULL);
+  bet_amount(PID[i]);
+
+  /*Track creation*/
   pthread_create(&MyThread[5], NULL, easy_diff, (void *)&PID[0]);
   pthread_join(MyThread[5], NULL);
   pthread_create(&MyThread[6], NULL, hard_diff, (void *)&PID[0]);
@@ -208,20 +226,34 @@ int main() {
     break;
   }
   pre_race_print();
-  for(int i = 0; i<5;i++) pthread_create(&MyThread[i], NULL, race, (void *)&PID[i]);
+  heady = horse_head;
+
+  i =0;
+  while(heady->nxt != NULL){
+    pthread_create(&MyThread[i], NULL, race, (void *)&PID[i]);
+    heady = heady->nxt;
+    i++;
+  }
 
   start = 1;
-  
-  for(int i= 0; i<5;i++) pthread_join(MyThread[i], NULL);
+  i = 0;
+  heady = horse_head;
+  while(heady->nxt != NULL){
+    pthread_join(MyThread[i], NULL);
+    heady = heady->nxt;
+    i++;
+  }
 
-  system("figlet -c THE RACE ENDED!");
-  
-  for(int i = 0;i<4;i++){
-    if(RaceGen->horses[i].chosen == 1){
-      if(RaceGen->horses[i].place == 1)
-        printf("You won your %d bet!\n", RaceGen->horses[i].bett);
-      else printf("You lost your %d bet!\n", RaceGen->horses[i].bett);
+  printf("\n\nTHE RACE ENDED!\n");
+  heady = horse_head;
+  while(heady->nxt != NULL){
+    if(heady->val.chosen == 1){
+      if(heady->val.place == 1)
+        printf("You won your %d bet!\n", heady->val.bett);
+      else printf("You lost your %d bet!\n", heady->val.bett);
     }
-  }                                                        
+    heady = heady->nxt;
+  }
+  free(RaceGen);
   return 1;
 }
