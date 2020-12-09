@@ -15,18 +15,19 @@ int bet = 0;
 int top = 0;
 int player = 1;
 int repeat = 0;
-char last_winner[50] = {0};
-char usernames[5][50] = {0};
-int bets[5] = {0};
-int num_users;
 // Global parameters
 RaceParams *RaceGen;
 HorseList *horse_head;
 HorseList *heady;
 HashMap *db;
 Heap *last_match;
+
+char last_winner[50] = {0};
+char usernames[5][50] = {0};
+int bets[5] = {0};
+int num_users;
 // Horse names list
-char names[15][20] = {"Rusher", "Gotcha", "White J", "Bones", "Sentinel", "Beautiful Princess", "Pisich", "Carry", "Kings Son", "Jose", "Carnage", "Corn Breaker"};
+char names[15][20] = {"Rusher", "Gotcha", "White J", "Bones", "Sentinel", "Beautiful Princess", "Pancreas", "Carry", "Kings Son", "Jose", "Carnage", "Corn Breaker"};
 
 UserList * initUNode(char val[]){
   UserList *neww = malloc(sizeof(UserList));
