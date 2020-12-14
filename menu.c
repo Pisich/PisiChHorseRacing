@@ -20,7 +20,6 @@ RaceParams *RaceGen;
 HorseList *horse_head;
 HorseList *heady;
 HashMap *db;
-Heap *last_match;
 
 char last_winner[50] = {0};
 char usernames[5][50] = {0};
@@ -36,13 +35,6 @@ UserList * initUNode(char val[]){
   return neww;
 }
 
-Node * initNode(Horse val){
-  Node *neww =  malloc(sizeof(Node));
-  neww->val = val;
-  neww->right = NULL;
-  neww->left = NULL;
-  return neww;
-}
 HorseList * iterList(int places){
   HorseList *head = horse_head;
   for(int i =0;i<places;i++) head = head->nxt;
@@ -55,69 +47,6 @@ HashMap * MapCreate(HashMap *Hmap, int size){
   for(int i=0;i<size;i++) Hmap->map[i] = NULL;
   Hmap->size = 0;
   return Hmap;
-}
-
-Heap * TreeCreate(){
-  Heap * neww = malloc(sizeof(Heap));
-  HorseList *head =  horse_head;
-  neww->size = 0;
-
-  neww->arr = (Horse *) malloc(sizeof(Horse) * top);
-  
-  for(int i=0;i<top;i++){
-    neww->arr[i] = head->val;
-    head = head->nxt;
-  }
-
-
-  head = horse_head;
-  while(head->nxt != NULL || head->val.place == 1) head = head->nxt;
-  neww->root = initNode(head->val);
-
-  return neww;
-}
-
-Node * BuildTree(Node *root, Horse arr[], int i, int n){
-  if(i >= n) return NULL;
-  if(i > 0) root = initNode(arr[i]);
-
-  root->left = BuildTree(root->left, arr, 2*i+1, n);
-  root->right = BuildTree(root->right, arr, 2*i+2, n);
-  return root;
-}
-
-void search(Horse *arr, int size, int i){
-  if (i <= size){
-    if (arr[i].place < arr[(i- 1)/2].place){
-      Horse memo = arr[i];
-      arr[i] = arr[(i- 1)/2];
-      arr[(i- 1)/2] = memo;
-      search(arr, size, (i- 1)/2);
-    }
-  }
-}
-
-void sort(Horse *arr, int size, int i){
-  Horse memo;
-  if(i < size){
-    memo = arr[i];
-    if(arr[i].place > arr[2*i+1].place && arr[2*i+1].place != 0){
-      arr[i] = arr[2*i+1];
-      arr[2*i+1] = memo;
-      sort(arr, size, 2*i+1);
-    }
-    if(arr[i].place > arr[2*i+2].place && arr[2*i+2].place != 0){
-      arr[i] = arr[2*i+2];
-      arr[2*i+2] = memo;
-      sort(arr, size, 2*i+2);
-    }
-  }
-}
-
-void insert(Heap *root, Horse value){
-  root->arr[root->size] = value;
-  search(root->arr, root->size, root->size);
-  root->size++;
 }
 
 void bet_amount(int place, User userr, int id){
@@ -505,18 +434,13 @@ int main() {
   // Pay the player bets
   pay_bets();
   // Free the last min heap
-  if(repeat) freeHeap(last_match->root);
   // If the user wants to play again, the program performs a reset
   heady = horse_head;
   if(playAgain()){
-    last_match = TreeCreate();
     while(heady->nxt != NULL){
       if(heady->val.place == 1) strcpy(last_winner, heady->val.name);
-      insert(last_match, heady->val);
       heady = heady->nxt;
     }
-    sort(last_match->arr, last_match->size, 0);
-    BuildTree(last_match->root, last_match->arr, 0, last_match->size);
     reset();
     main();
   }
