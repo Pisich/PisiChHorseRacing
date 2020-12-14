@@ -208,19 +208,12 @@ void reset(){
   Func = NULL;
 }
 
-void leaderboard(){
-  Horse winner = HorsePeek(last_match->root);
-  printf("\tLeaderboard:\n");
-  printf("\n\n\t%s won last match\n", last_winner);
-}
-
 int main_menu(){
   int option;
   printf("Pre-race options:\n");
   if(top == 5) printf("Enter 0 to play with default settings (5 horses)\n");
   else printf("Enter 0 to exit\n");
   printf("1. Add a horse\n2. Remove a horse\n");
-  if(repeat) printf("3. See last match winner\n");
   printf("Enter your selection here: ");
   scanf("%d", &option);
   if(top == 12 && option == 1){
@@ -231,7 +224,6 @@ int main_menu(){
     printf("You can't have less than 2 horses in the track!\n\n");
     return 0;
   }
-  else if(option == 3) leaderboard();
   return option;
 }
 
