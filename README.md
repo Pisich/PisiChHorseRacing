@@ -33,4 +33,4 @@ docker run pisichhorseracing:1.0
 ```
 The proyect is built inside an Alpine image. Inside it, there are some basic compiling and formatting tools that the proyect depends on.
 ## Contributions
-Note that this program is in early development, if you would like to see a feature added, feel free to submit an issue or a pull request.
+If you would like to see a feature added, feel free to submit an issue or a pull request.
