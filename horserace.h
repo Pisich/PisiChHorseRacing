@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <math.h>
 
+#ifndef PISICH_RACE
+
 #define RACE_LIM 50
 
 #ifndef Bool
@@ -51,3 +53,4 @@ typedef struct Heap{
   Node *root;
   Horse *arr;
 }Heap;
+#endif
