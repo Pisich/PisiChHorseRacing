@@ -29,7 +29,7 @@ cd PisiChHorseRacing
 docker build -t pisichhorseracing:1.0 .
 
 #Run the container
-docker run pisichhorseracing:1.0
+docker run -it pisichhorseracing:1.0
 ```
 The proyect is built inside an Alpine image. Inside it, there are some basic compiling and formatting tools that the proyect depends on.
 ## Contributions
