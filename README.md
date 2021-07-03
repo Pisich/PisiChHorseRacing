@@ -13,7 +13,7 @@ git clone https://github.com/Pisich/PisiChHorseRacing
 cd PisiChHorseRacing
 
 # Compile the code
-gcc -o main.c PisiChHorseRacing
+gcc -o -pthread main.c PisiChHorseRacing 
 ```
 ## Building the container
 To build the container you must have docker installed in your system.</br>
