@@ -1,4 +1,4 @@
-# PisiChHorseBetting
+# PisiChHorseRacing
 By Carlos Rodríguez (Pisich)
 
 A horse race betting simulator where the user can choose to bet for their favorite horse. PisiChHorseRacing uses all kinds of data structures for its internal operation, it features the use of Linked Lists, Heaps, HashMaps, etc. The user can also choose to add or remove horses, the difficulty of the race (easy or hard), the harder the difficulty is, the more obstacles the horse will have to jump. This version supports multithreading and memory management.
