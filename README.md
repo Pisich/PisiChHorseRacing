@@ -5,7 +5,7 @@ A horse race betting simulator where the user can choose to bet for their favori
 This project uses multithreading and dynamic memory management for its internal functioning.
 
 ## Compiling
-You can use any C compiler for this proyect, but I recommend you to use GCC.
+You can use any C compiler for this project, but I recommend you to use GCC.
 ```bash
 # Clone the PisiChHorseRacing repo
 git clone https://github.com/Pisich/PisiChHorseRacing .
@@ -26,6 +26,6 @@ docker build -t pisichhorseracing:1.0 .
 #Run the container
 docker run -it pisichhorseracing:1.0
 ```
-The proyect is built inside an Alpine image. Inside it, there are some basic compiling and formatting tools that the proyect depends on.
+The project is built inside an Alpine image. Inside it, there are some basic compiling and formatting tools that the proyect depends on.
 ## Contributions
 If you would like to see a feature added, feel free to submit an issue or a pull request.
