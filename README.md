@@ -8,10 +8,7 @@ This project uses multithreading and dynamic memory management for its internal 
 You can use any C compiler for this proyect, but I recommend you to use GCC.
 ```bash
 # Clone the PisiChHorseRacing repo
-git clone https://github.com/Pisich/PisiChHorseRacing
-
-# Cd into the newly created folder
-cd PisiChHorseRacing
+git clone https://github.com/Pisich/PisiChHorseRacing .
 
 # Compile the code
 gcc -o -pthread main.c PisiChHorseRacing 
