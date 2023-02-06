@@ -26,7 +26,8 @@ char usernames[5][50] = {0};
 int bets[5] = {0};
 int num_users;
 // Horse names list
-char names[15][20] = {"Rusher", "Gotcha", "White J", "Bones", "Sentinel", "Beautiful Princess", "Pancreas", "Carry", "Kings Son", "Jose", "Carnage", "Corn Breaker"};
+char names[14][20] = {"Rusher", "Gotcha", "Blue J", "Bones", "Sentinel","Beautiful Princess",
+  "Pancreas", "Carry", "Kings Son", "Jose", "Carnage", "Corn Breaker", "Thunder", "SpeedQuitter"};
 
 UserList * initUNode(char val[]){
   UserList *neww = malloc(sizeof(UserList));
@@ -52,10 +53,10 @@ HashMap * MapCreate(HashMap *Hmap, int size){
 void bet_amount(int place, User userr, int id){
   HorseList *head = horse_head;
   for(int i=0;i<place;i++) head = head->nxt;
-  printf("%s place your bet for %s: ", userr.name, head->val.name);
+  printf("%s place your bet for %s:\n", userr.name, head->val.name);
   scanf("%d", &bet);
   while(bet < 0){
-    printf("Invalid answer, please try again: ");
+    printf("Invalid answer, please try again:\n");
     scanf("%d", &bet);
   }
   bets[id-1] = bet;
@@ -165,13 +166,13 @@ void remove_horse(){
 
 void initial_print(){
   HorseList *head = horse_head;
-  printf("WELCOME TO HORSE RACE SIM 2020\n");
+  printf("WELCOME TO PisiChHorseRacing!\n");
   printf("Select the horse that you want to bet to!\n");
   for(int i=0;i<top;i++){
     printf("%d. %s\n", i, head->val.name);
     head = head->nxt;
   }
-  printf("Enter your selection here: ");
+  printf("Enter your selection here:\n");
 }
 
 void freeHeap(Node *root){
@@ -208,21 +209,24 @@ void reset(){
   Func = NULL;
 }
 
-int main_menu(){
+int select_horse_amount(){
   int option;
   printf("Pre-race options:\n");
   if(top == 5) printf("Enter 0 to play with default settings (5 horses)\n");
   else printf("Enter 0 to exit\n");
   printf("1. Add a horse\n2. Remove a horse\n");
-  printf("Enter your selection here: ");
+  printf("Enter your selection:\n");
   scanf("%d", &option);
-  if(top == 12 && option == 1){
+  if (option > 2){
+    return 3;
+  }
+  else if(top == 14 && option == 1){
     printf("Reached max amount of horses in a race!\n\n");
-    return 0;
+    return 3;
   }
   else if(top == 2 && option == 2){
     printf("You can't have less than 2 horses in the track!\n\n");
-    return 0;
+    return 3;
   }
   return option;
 }
@@ -230,7 +234,7 @@ int main_menu(){
 void diff_print(){
   printf("Which race difficulty do you want to play?\n");
   printf("0. EASY\n1. HARD\n");
-  printf("Please enter your selection: ");
+  printf("Please enter your selection:\n");
 }
 
 void pre_race_print(){
@@ -242,11 +246,11 @@ void pre_race_print(){
 int playAgain(){
   char option;
   scanf("%c", &option);
-  printf("Would you like to race again? (y or n): ");
+  printf("Would you like to race again? (y or n):\n");
   scanf("%c", &option);
   while(option != 'y' && option != 'n'){
     printf("Invalid answer, please try again\n");
-    printf("Would you like to race again? (y or n): ");
+    printf("Would you like to race again? (y or n):\n");
     scanf("%c", &option);
   }
   if(option == 'y') return 1;
@@ -325,10 +329,10 @@ void pay_bets(){
 
 int UserAsk(){
   int num;
-  printf("How many players are playing right now? ");
+  printf("How many players are playing right now?\n");
   scanf("%d", &num);
   while(num > 5 || num < 0){
-    printf("Invalid entry, please try again: ");
+    printf("Invalid entry, please try again:\n");
     scanf("%d", &num);
   }
   return num;
@@ -337,8 +341,8 @@ int UserAsk(){
 int main() {
   int f;
   int *option = &f;
-  pthread_t MyThread[12];
-  const int PID[12] = {0,1,2,3,4,5,6,7,8,9,10,11};
+  pthread_t MyThread[14];
+  const int PID[14] = {0,1,2,3,4,5,6,7,8,9,10,11};
   RaceGen = malloc(sizeof(RaceParams));
 
   horse_head = malloc(sizeof(HorseList));
@@ -349,15 +353,19 @@ int main() {
 
   srand(time(0));
   for(int i = 0;i<5;i++) add_and_init_horse();
-  while( (f = main_menu()) != 0){
+  do{
+    f = select_horse_amount();
     switch(f){
     case 1: add_and_init_horse();
     break;
     case 2: remove_horse();
     break;
-    case 3: break;
-    } 
-  }
+    case 3:
+      printf("Invalid selection, please try again\n");
+      break;
+    default: break;
+    }
+  } while(f != 0);
 
   Func = &init_horses;
   // Users enter their name and horse selection
@@ -366,7 +374,7 @@ int main() {
   heady = horse_head;
 
   for(int i=1;i<num_users+1;i++){
-    printf("User %d please enter your name: ", i);
+    printf("User %d please enter your username:\n", i);
     scanf("%s", temp);
     User userr;
     if(!MapContains(db, temp)) userr = MapInsert(db, temp);
@@ -376,7 +384,7 @@ int main() {
     initial_print();
     scanf("%d", option);
     while(*option > top-1 || *option < 0 || iterList(*option)->val.chosen >= 1){
-      printf("Invalid answer, please try again: ");
+      printf("Invalid answer, please try again:\n");
       scanf("%d", option);
     }
 
