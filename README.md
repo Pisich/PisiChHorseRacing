@@ -1,7 +1,8 @@
 # PisiChHorseRacing
 By Carlos Rodríguez (Pisich)
 
-A horse race betting simulator where the user can choose to bet for their favorite horse. PisiChHorseRacing uses all kinds of data structures for its internal operation, it features the use of Linked Lists, Heaps, HashMaps, etc. The user can also choose to add or remove horses, the difficulty of the race (easy or hard), the harder the difficulty is, the more obstacles the horse will have to jump. This version supports multithreading and memory management.
+A horse race betting simulator where the user can choose to bet for their favorite horse. PisiChHorseRacing only uses data structures for its internal operation, it features linked lists, heaps, hashmaps, etc. The user can choose to add and remove horses, the difficulty of the race (easy or hard), the harder the difficulty is, the more obstacles the horse will have to jump.
+This project uses multithreading and dynamic memory management for its internal functioning.
 
 ## Compiling
 You can use any C compiler for this proyect, but I recommend you to use GCC.
@@ -16,16 +17,13 @@ cd PisiChHorseRacing
 gcc -o -pthread main.c PisiChHorseRacing 
 ```
 ## Building the container
-To build the container you must have docker installed in your system.</br>
+To build the container you must have Docker installed in your system.</br>
 If you already have it you can just follow these steps to build the container:
 ```bash
 # Clone the PisiChHorseRacing repo
-git clone https://github.com/Pisich/PisiChHorseRacing
+git clone https://github.com/Pisich/PisiChHorseRacing .
 
-# Cd into the newly created folder
-cd PisiChHorseRacing
-
-# Build the container (Attention to the '.')
+# Build the container
 docker build -t pisichhorseracing:1.0 .
 
 #Run the container
