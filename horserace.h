@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 #include <pthread.h>
 #include <time.h>
@@ -9,7 +13,7 @@
 #ifndef PISICH_RACE
 
 #define RACE_LIM 50
-
+#define MAX_MAP_SIZE 5
 #ifndef Bool
   #define Bool short int
 #endif
@@ -53,4 +57,8 @@ typedef struct Heap{
   Node *root;
   Horse *arr;
 }Heap;
+#endif
+
+#ifdef __cplusplus
+}
 #endif
